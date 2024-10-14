@@ -1845,13 +1845,15 @@ elif [[ ! -z "${ROIs_d}/Part1.done" ]] && [[ ! -z "${ROIs_d}/Part2.done" ]]; the
 
     # account for different tracking algorithms
 
-    subj_dwi=($(find ${d_dir} -type f -name "dwi_preproced_reg2T1w.mif"))
+    #subj_dwi=($(find ${d_dir} -type f -name "dwi_preproced_reg2T1w.mif"))
+    subj_dwi=($(find ${d_dir} -type f -name "sub-${subj}.mif"))
 
-    subj_fod=($(find ${d_dir} -type f -name "dhollander_wmfod_reg2T1w.mif"))
+    #subj_fod=($(find ${d_dir} -type f -name "dhollander_wmfod_reg2T1w.mif"))
+    subj_fod=($(find ${d_dir} -type f -name "sub-${subj}_wmfod.mif"))
 
-    subj_dt=($(find ${d_dir} -type f -name "dwi_dt_reg2T1w.mif"))
+    subj_dt=($(find ${d_dir} -type f -name "sub-${subj}_dt.mif"))
 
-    subj_dwi_bm=($(find ${d_dir} -type f -name "dwi_preproced_reg2T1w_mask.nii.gz"))
+    subj_dwi_bm=($(find ${d_dir} -type f -name "sub-${subj}_mask.nii.gz"))
 
     # find your dwis
 

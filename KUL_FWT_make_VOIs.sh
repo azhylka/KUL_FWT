@@ -853,17 +853,13 @@ function PD25_lab_gen {
 
 # initial vars
 
-subj_dwi=($(find ${d_dir} -type f -name "dwi_preproced_reg2T1w.mif"))
-
-subj_fod=($(find ${d_dir} -type f -name "dhollander_wmfod_reg2T1w.mif"))
-
 subj_dt=($(find ${d_dir} -type f -name "dwi_dt_reg2T1w.mif"))
 
-subj_FA=($(find ${d_dir}/qa -type f -name "fa_reg2T1w.nii.gz"))
+subj_FA=($(find ${d_dir} -type f -name "*FA.nii.gz"))
 
-subj_ADC=($(find ${d_dir}/qa -type f -name "adc_reg2T1w.nii.gz"))
+subj_ADC=($(find ${d_dir} -type f -name "*ADC.nii.gz"))
 
-subj_dwi_bm=($(find ${d_dir} -type f -name "dwi_preproced_reg2T1w_mask.nii.gz"))
+#subj_dwi_bm=($(find ${d_dir} -type f -name "*mask.nii.gz"))
 
 # find label images 
 
@@ -910,90 +906,6 @@ FA2MS_str="${prep_d}/fa_2_UKBB_vMS_${subj}${ses_str}"
 # split the JuHA labels apart already
 GNs=("LGN_RT" "LGN_LT" "MGN_RT" "MGN_LT");
 
-# find your dwis
-
-if [[ ! -f ${subj_dwi} ]]; then
-
-    subj_dwi=($(find ${d_dir} -type f -name "*dwi_prep*"))
-
-    if [[ ! -f ${subj_dwi} ]]; then
-
-        subj_dwi=($(find ${d_dir} -type f -name "*dwi_pp*"))
-
-        if [[ ! -f ${subj_dwi} ]]; then
-
-            subj_dwi=($(find ${d_dir} -type f -name "*dwi*"))
-
-            if [[ ! -f ${subj_dwi} ]]; then
-
-                echo "no DWI found, quitting" | tee -a ${prep_log2}
-                exit 2
-
-            else
-
-                echo "Potentially unprocessed dwi being used -> ${subj_dwi}, results can be suboptimal" | tee -a ${prep_log2}
-
-            fi
-
-        else
-
-            echo "preprocessed dwi found ${subj_dwi}" | tee -a ${prep_log2}
-
-        fi
-
-    fi
-
-fi
-
-# find FODs
-## AR TO DO: make choice of wmfod up to the user
-
-if [[ -z ${subj_fod} ]]; then
-
-    subj_fod=($(find ${d_dir} -type f -name "*wmfod_reg2T1w.mif"))
-
-    if [[ -z ${subj_fod} ]]; then
-
-        subj_fod=($(find ${d_dir} -type f -name "*wmfod_noGM.mif"))
-
-        if [[ -z ${subj_fod} ]]; then
-
-            subj_fod=($(find ${d_dir} -type f -name "*wmfod.mif"))
-
-            if [[ -z ${subj_fod} ]]; then
-
-                echo "no FODs found, quitting" | tee -a ${prep_log2}
-                exit 2
-
-            fi
-
-        fi
-
-    fi
-
-fi
-
-# find diff brain mask
-
-if [[ ! -f ${subj_dwi_bm} ]]; then
-
-    subj_dwi_bm=($(find ${d_dir} -type f -name "dwi_mask.nii.gz"))
-
-    if [[ ! -f ${subj_dwi_bm} ]]; then
-
-        subj_dwi_bm=($(find ${d_dir} -type f -name "*brain_mask*"))
-
-        if [[ ! -f ${subj_dwi_bm} ]]; then
-
-            echo "no dwi brain mask found, quitting" | tee -a ${prep_log2}
-            exit 2
-
-        fi
-
-    fi
-
-fi
-
 
 pt1_done="${ROIs_d}/Part1.done"
 
@@ -1020,57 +932,9 @@ if [[ -z ${srch_pt1_done} ]]; then
 
     fi
 
-    if [[ ! -f ${subj_dt} ]]; then
-
-        subj_dt=($(find ${d_dir} -type f -name "*_tensor*"))
-
-        if [[ ! -f ${subj_dt} ]]; then
-
-            subj_dt="${prep_d}/sub-${subj}_tensor.mif"
-
-            subj_FA="${prep_d}/fa.nii.gz"
-
-            subj_ADC="${prep_d}/adc.nii.gz"
-
-            echo "no Diffusion tensor found, we will make it and its derivatives" | tee -a ${prep_log2}
-
-            task_in="dwi2tensor -force -nthreads ${ncpu} -mask ${subj_dwi_bm} ${subj_dwi} ${subj_dt} \
-            && tensor2metric -force -nthreads ${ncpu} -mask ${subj_dwi_bm} -fa ${subj_FA} -adc ${subj_ADC} \
-            ${subj_dt}"
-
-            task_exec
-
-        else
-
-            echo " Diffusion tensor found, this data is not preprocessed using KUL_NITs " | tee -a ${prep_log2}
-
-            subj_FA=($(find ${d_dir} -type f -name "FA.nii.gz"));
-
-            subj_ADC=($(find ${d_dir} -type f -name "ADC.nii.gz"));
-
-            if [[ -z ${subj_FA} ]] || [[ -z ${subj_ADC} ]]; then
-
-                subj_FA="${prep_d}/fa.nii.gz"
-
-                subj_ADC="${prep_d}/adc.nii.gz"
-
-                echo " FA and/or ADC not found, generating" | tee -a ${prep_log2}
-
-                task_in="tensor2metric -force -nthreads ${ncpu} -mask ${subj_dwi_bm} -fa ${subj_FA} -adc ${subj_ADC} ${subj_dt}"
-
-                task_exec
-
-            fi
-
-        fi
-
-    else
-
         task_in="cp ${subj_FA} ${prep_d}/fa.nii.gz && cp ${subj_ADC} ${prep_d}/adc.nii.gz"
 
         task_exec
-
-    fi
 
     if [[ ! -f ${subj_aparc_nii} ]] || [[ ! -f ${subj_aparc_mgz} ]] || [[ ! -f ${subj_MS_sc3} ]]; then
 

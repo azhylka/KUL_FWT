@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/andrey/anaconda3/bin/python
 
 import nibabel as nib
 import matplotlib.pyplot as plt

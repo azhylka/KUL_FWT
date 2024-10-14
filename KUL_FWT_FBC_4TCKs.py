@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/andrey/anaconda3/bin/python
 
 # A small python script to run FBC filtering
 # 3 inputs arguments are expected, 1 - input tck, 2 - reference anatomy image, and 3 - output tck.

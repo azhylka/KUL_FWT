@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/andrey/anaconda3/bin/python
 
 # This is an automated command line tool to calculate morphological features of tractograms
 # This is based on: https://doi.org/10.1016/j.neuroimage.2020.117329

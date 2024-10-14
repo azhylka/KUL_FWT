@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/andrey/anaconda3/bin/python
 # need to make sure that segment sizes are comparable!
 # need condition not to go below a certain voxel count maybe?
 

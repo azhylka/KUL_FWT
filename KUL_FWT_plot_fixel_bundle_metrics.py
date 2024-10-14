@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/andrey/anaconda3/bin/python
 
 import pandas as pd
 import matplotlib.pyplot as plt
